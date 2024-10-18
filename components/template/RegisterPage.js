@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';  // Import Next.js router for redirecti
 import Link from 'next/link';
 
 function RegisterPage() {
-    const { registerUser, loading, error, user } = useContext(ColorModeContext);
+    const { registerUser, loading, error } = useContext(ColorModeContext);
     const router = useRouter();  // Initialize router
 
     const formik = useFormik({
@@ -33,10 +33,15 @@ function RegisterPage() {
 
         onSubmit: (values) => {
             // Pass form values to registerUser function from context
-            registerUser(values, () => {
+            const isRegistered = registerUser(values, () => {
                 // Redirect to login page after successful registration
                 router.push('/login');
             });
+
+            // If registration failed, no redirection occurs
+            if (!isRegistered) {
+                toast.error('Registration failed!'); // Show error if registration fails
+            }
         },
     });
 
@@ -140,7 +145,7 @@ function RegisterPage() {
                     {/* checkbox */}
                     <FormControlLabel
                         label="I accept terms of privacy policy"
-                        control={<Checkbox color='button' name='accepted' onBlur={formik.handleBlur} onChange={formik.handleChange} value={formik.values.accepted} />}
+                        control={<Checkbox color='button' name='accepted' onBlur={formik.handleBlur} onChange={formik.handleChange} checked={formik.values.accepted} />}
                         sx={{ mb: "10px" }}
                     />
                     {formik.touched.accepted && formik.errors.accepted && <Typography color="error" sx={{ fontSize: '12px', marginBottom: '25px' }}>{formik.errors.accepted}</Typography>}

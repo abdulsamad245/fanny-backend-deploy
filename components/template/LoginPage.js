@@ -1,21 +1,23 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-// mui
-import {
-    Box, Button,
-    TextField, Typography,
-} from '@mui/material';
+// MUI
+import { Box, Button, TextField, Typography } from '@mui/material';
 
-// formik
+// Formik
 import { useFormik } from 'formik';
-import * as Yup from 'yup'
+import * as Yup from 'yup';
 
-// icons
+// Icons
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebookSquare } from 'react-icons/fa';
+import { useContext } from 'react'; //
+import { ColorModeContext } from '../../theme/MUI_MODE';
+import { useRouter } from 'next/router';
 
 function LoginPage() {
+    const { loginUser, loading, error } = useContext(ColorModeContext);
+    const router = useRouter();
 
     const formik = useFormik({
         initialValues: {
@@ -23,10 +25,15 @@ function LoginPage() {
             password: '',
         },
         validationSchema: Yup.object({
-            email: Yup.string().required('Email is Required!').email('Invalid E-mail adress.'),
+            email: Yup.string().required('Email is Required!').email('Invalid E-mail address.'),
             password: Yup.string().required('Password is Required!').min(8, 'Password must be more than 8 characters.'),
         }),
-    })
+        onSubmit: async (values) => {
+            const success = await loginUser(values, () => {
+                router.push('/products');
+            } );
+        },
+    });
 
     return (
         <Box sx={{
@@ -36,15 +43,13 @@ function LoginPage() {
             flexDirection: { xs: "row-reverse", md: "row" }
         }}>
 
-            {/* Register Form */}
+            {/* Login Form */}
             <Box sx={{
                 width: { xs: "100%", md: "600px", xl: "500px" },
             }}>
 
-                {/* title */}
-                <Box sx={{
-                    mb: "30px"
-                }}>
+                {/* Title */}
+                <Box sx={{ mb: "30px" }}>
                     <Typography variant="h5" component="h2" sx={{
                         fontWeight: "600", mb: "5px",
                         fontSize: { xs: "30px", md: "35px", xl: "40px" },
@@ -58,20 +63,21 @@ function LoginPage() {
                     }}>
                         Don&apos;t have an account?
                         <Link href='/register'>
-                            <a style={{ marginLeft: '5px', color: '#48cae4', }} >
+                            <a style={{ marginLeft: '5px', color: '#48cae4', }}>
                                 register
                             </a>
                         </Link>
                     </Typography>
                 </Box>
 
-                {/* form */}
+                {/* Form */}
                 <form onSubmit={formik.handleSubmit}>
 
-                    {/* email */}
-                    <Box sx={{
-                        mb: "10px"
-                    }}>
+                    {/* Show error if any */}
+                    {error && <Typography color="error" sx={{ mb: 2 }}>{error}</Typography>}
+
+                    {/* Email */}
+                    <Box sx={{ mb: "10px" }}>
                         <Typography variant='body1' sx={{
                             fontWeight: "600", mb: "3px",
                             fontSize: { xs: "13px", md: "15px" }
@@ -88,16 +94,12 @@ function LoginPage() {
                             value={formik.values.email}
                             onChange={formik.handleChange}
                             error={formik.touched.email && formik.errors.email ? true : false}
-                            helperText={formik.touched.email && formik.errors.email ?
-                                formik.errors.email : ""
-                            }
+                            helperText={formik.touched.email && formik.errors.email ? formik.errors.email : ""}
                         />
                     </Box>
 
-                    {/* password */}
-                    <Box sx={{
-                        mb: "10px"
-                    }}>
+                    {/* Password */}
+                    <Box sx={{ mb: "10px" }}>
                         <Typography variant='body1' sx={{
                             fontWeight: "600", mb: "3px",
                             fontSize: { xs: "14px", md: "15px" }
@@ -107,32 +109,31 @@ function LoginPage() {
                         <TextField
                             fullWidth
                             size='small'
-                            type='text'
+                            type='password' // Change type to password
                             name='password'
                             id='password'
                             onBlur={formik.handleBlur}
                             value={formik.values.password}
                             onChange={formik.handleChange}
                             error={formik.touched.password && formik.errors.password ? true : false}
-                            helperText={formik.touched.password && formik.errors.password ?
-                                formik.errors.password : ""
-                            }
+                            helperText={formik.touched.password && formik.errors.password ? formik.errors.password : ""}
                         />
                     </Box>
 
-                    {/* submit button */}
+                    {/* Submit Button */}
                     <Button
                         variant='contained'
                         type='submit'
                         color='button'
                         fullWidth
                         sx={{ height: "45px", }}
+                        disabled={loading} // Disable button when loading
                     >
                         <Typography variant='subtitle1' sx={{
                             color: 'white', fontWeight: "600",
                             fontSize: { xs: "13px", xl: "14px" },
                         }}>
-                            Log in
+                            {loading ? 'Logging in...' : 'Log in'}
                         </Typography>
                     </Button>
 
@@ -144,14 +145,14 @@ function LoginPage() {
                         OR
                     </Typography>
 
-                    {/* Register with google and facebook */}
+                    {/* Register with Google and Facebook */}
                     <Box sx={{
                         display: "flex", alignItems: "center",
                         justifyContent: "space-between", gap: { xs: "15px" },
                         flexDirection: { xs: "column", md: "row" }
                     }}>
 
-                        {/* google */}
+                        {/* Google */}
                         <Button variant='outlined' sx={{
                             height: "45px", width: { xs: "100%", md: "280px", xl: "240px" }
                         }}>
@@ -164,7 +165,7 @@ function LoginPage() {
                             </Typography>
                         </Button>
 
-                        {/* facebook */}
+                        {/* Facebook */}
                         <Button variant='outlined' sx={{
                             height: "45px", width: { xs: "100%", md: "280px", xl: "240px" }
                         }}>

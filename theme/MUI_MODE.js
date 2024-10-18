@@ -1,83 +1,68 @@
 import { createTheme, ThemeProvider } from "@mui/material";
 import { createContext, useMemo, useState, useEffect } from "react";
-
-import { toast } from 'react-toastify';  // Import react-toastify
-import 'react-toastify/dist/ReactToastify.css';  // Import the CSS for toastify
+import { toast } from 'react-toastify';  
+import 'react-toastify/dist/ReactToastify.css';  
 
 export const ColorModeContext = createContext({
-    toggleMode: () => { },
+    toggleMode: () => {},
     mode: 'light'
 })
 
 export const ColorContextProvider = ({ children }) => {
-    const [user, setUser] = useState(null); // Store the current user
+    const [user, setUser] = useState(null); 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [registeredUsers, setRegisteredUsers] = useState([]);
-
-    // Retrieve registered users from local storage on client mount
-    useEffect(() => {
+    const [registeredUsers, setRegisteredUsers] = useState(() => {
         if (typeof window !== 'undefined') {
             const savedUsers = localStorage.getItem('registeredUsers');
-            if (savedUsers) {
-                setRegisteredUsers(JSON.parse(savedUsers));
-            }
+            return savedUsers ? JSON.parse(savedUsers) : [];
         }
-    }, []);
+        return [];
+    });
 
-    // Save registered users to local storage whenever it changes
     useEffect(() => {
         if (typeof window !== 'undefined') {
             localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
         }
     }, [registeredUsers]);
 
-    // Register function
-    const registerUser = (email, password) => {
+    const registerUser = (values, callback) => {
+        const { lastName, email, password } = values;
         const existingUser = registeredUsers.find((u) => u.email === email);
         if (existingUser) {
-            // Show error toast if user already exists
             toast.error('User already exists!');
             return false;
         } else {
-            // Add new user to the registeredUsers array
-            setRegisteredUsers((prev) => [...prev, { email, password }]);
-            // Show success toast
+            setRegisteredUsers((prev) => [...prev, { lastName, email, password }]);
             toast.success('Registration successful!');
+            if (callback) callback();
             return true;
         }
     };
 
-    // Login function
-    const loginUser = (email, password, callback) => {
+    const loginUser = ({ email, password }, callback) => {
         setLoading(true);
         setError(null);
 
-        // Simulate API call to validate credentials
         setTimeout(() => {
             const foundUser = registeredUsers.find((u) => u.email === email && u.password === password);
             if (foundUser) {
-                setUser({ email }); // Set the user in state
+                setUser({ username: foundUser.lastName });
                 setLoading(false);
-
-                // Show success toast
                 toast.success('Login successful!');
-                
-                // Execute callback function (redirect)
                 if (callback) callback();
             } else {
                 setError('Invalid email or password');
                 setLoading(false);
-                // Show error toast
                 toast.error('Invalid email or password');
             }
         }, 1000);
     };
 
-    // Logout function
     const logout = () => {
         setUser(null);
     };
+
     const [mode, setMode] = useState('light');
 
     const colorMode = useMemo(
@@ -85,7 +70,7 @@ export const ColorContextProvider = ({ children }) => {
             toggleMode: () => setMode(prevMode => prevMode === 'light' ? 'dark' : 'light'),
             mode
         }), [mode]
-    )
+    );
 
     const theme = createTheme({
         breakpoints: {
@@ -112,7 +97,7 @@ export const ColorContextProvider = ({ children }) => {
             }
         },
         palette: {
-            mode: mode, // light or dark
+            mode: mode,
             primary: {
                 main: mode === 'light' ? '#000000' : '#ffffff'
             },
@@ -131,19 +116,16 @@ export const ColorContextProvider = ({ children }) => {
                 dark: '#264653',
             },
             navCart: {
-                main: "#88A47C"
+                main: "#f80000"
             },
-
         },
-    })
-
+    });
 
     return (
-        <ColorModeContext.Provider value={{colorMode, user, registerUser, loginUser, logout, loading, error }}>
+        <ColorModeContext.Provider value={{ colorMode, user, registerUser, loginUser, logout, loading, error }}>
             <ThemeProvider theme={theme}>
                 {children}
             </ThemeProvider>
         </ColorModeContext.Provider>
-    )
-
-}
+    );
+};

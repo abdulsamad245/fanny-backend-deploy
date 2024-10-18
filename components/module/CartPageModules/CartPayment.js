@@ -99,7 +99,7 @@ function CartPayment() {
                         color: 'white', fontWeight: "500",
                         fontSize: "14px"
                     }}>
-                        Cleare cart
+                        Clear cart
                     </Typography>
 
                 </Button>
@@ -113,7 +113,7 @@ function CartPayment() {
                         color: 'white', fontWeight: "500",
                         fontSize: "14px"
                     }}>
-                        Cheackout now
+                        Checkout now
                     </Typography>
 
                 </Button>
