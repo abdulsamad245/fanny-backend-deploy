@@ -60,6 +60,7 @@ export const ColorContextProvider = ({ children }) => {
     };
 
     const logout = () => {
+        localStorage.removeItem('cart')
         setUser(null);
     };
 
