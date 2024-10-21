@@ -11,6 +11,9 @@ import Link from 'next/link';
 function RegisterPage() {
     const { registerUser, loading, error } = useContext(ColorModeContext);
     const router = useRouter();  // Initialize router
+    
+    const savedUsers = localStorage.getItem('registeredUsers');
+    if ((JSON.parse(savedUsers).length) > 0) router.push('/products');
 
     const formik = useFormik({
         initialValues: {

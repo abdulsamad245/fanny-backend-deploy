@@ -23,6 +23,8 @@ export const ColorContextProvider = ({ children }) => {
     useEffect(() => {
         if (typeof window !== 'undefined') {
             localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+            console.log(registeredUsers.type);
+            if (registeredUsers && registeredUsers.length != 0) {setUser({ username: registeredUsers[0].lastName });}
         }
     }, [registeredUsers]);
 
@@ -60,7 +62,8 @@ export const ColorContextProvider = ({ children }) => {
     };
 
     const logout = () => {
-        localStorage.removeItem('cart')
+        localStorage.removeItem('cart');
+        localStorage.removeItem('registeredUsers');
         setUser(null);
     };
 

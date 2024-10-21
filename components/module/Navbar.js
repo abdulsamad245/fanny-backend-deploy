@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { useContext, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
 
 // context for light and dark mode
@@ -37,13 +37,17 @@ import {
   MenuItem,
 } from "@mui/material";
 
+import { clear } from "../../redux/features/cartSlice";
+
 const Navbar = () => {
   const { mode, toggleMode, user, logout } = useContext(ColorModeContext);
   const [menu, setMenu] = useState();
   const router = useRouter();
   const countOfProduct = useSelector((state) => state.cart.totalProcuts);
 
-  console.log({ user });
+  const dispatch = useDispatch()
+
+  // console.log({ user });
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -54,8 +58,10 @@ const Navbar = () => {
   const handleMenuClose = () => {
     setAnchorEl(null);
   };
+  
 
   const handleLogout = () => {
+    dispatch(clear());
     logout();
     handleMenuClose();
     router.push('/login');
