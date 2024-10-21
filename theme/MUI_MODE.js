@@ -49,6 +49,7 @@ export const ColorContextProvider = ({ children }) => {
         setTimeout(() => {
             const foundUser = registeredUsers.find((u) => u.email === email && u.password === password);
             if (foundUser) {
+                localStorage.setItem('loggedInUsers', JSON.stringify(foundUser));
                 setUser({ username: foundUser.lastName });
                 setLoading(false);
                 toast.success('Login successful!');
@@ -63,7 +64,7 @@ export const ColorContextProvider = ({ children }) => {
 
     const logout = () => {
         localStorage.removeItem('cart');
-        localStorage.removeItem('registeredUsers');
+        localStorage.removeItem('loggedInUsers');
         setUser(null);
     };
 

@@ -19,8 +19,8 @@ function LoginPage() {
     const { loginUser, loading, error } = useContext(ColorModeContext);
     const router = useRouter();
 
-    const savedUsers = localStorage.getItem('registeredUsers');
-    if ((JSON.parse(savedUsers).length) > 0) router.push('/products');
+    const savedUsers = localStorage.getItem('loggedInUsers');
+    if (savedUsers && (JSON.parse(savedUsers).length) > 0) router.push('/products');
 
     const formik = useFormik({
         initialValues: {
@@ -67,7 +67,7 @@ function LoginPage() {
                         Don&apos;t have an account?
                         <Link href='/register'>
                             <a style={{ marginLeft: '5px', color: '#48cae4', }}>
-                                register
+                                Register
                             </a>
                         </Link>
                     </Typography>
