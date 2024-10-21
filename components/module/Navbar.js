@@ -40,14 +40,14 @@ import {
 import { clear } from "../../redux/features/cartSlice";
 
 const Navbar = () => {
-  const { mode, toggleMode, user, logout } = useContext(ColorModeContext);
+  const { mode, toggleMode, loggedInUser, logout } = useContext(ColorModeContext);
   const [menu, setMenu] = useState();
   const router = useRouter();
   const countOfProduct = useSelector((state) => state.cart.totalProcuts);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
-  // console.log({ user });
+  console.log({loggedInUser });
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -141,16 +141,16 @@ const Navbar = () => {
               display: { xs: "none", xl: "block" },
             }}
           >
-            <Tooltip title={user ? "Logout" : "Login/Register"}>
+            <Tooltip title={loggedInUser ? "Logout" : "Login/Register"}>
               <IconButton
                 size="large"
                 aria-label="account of current user"
                 onClick={handleMenuOpen}
                 color="inherit"
               >
-                {user ? (
+                {(loggedInUser && loggedInUser.username) ? (
                   <>
-                    <Typography variant="body1">{`Hi, ${user.username}`}</Typography>{" "}
+                    <Typography variant="body1">{`Hi, ${loggedInUser.username}`}</Typography>{" "}
                   </>
                 ) : (
                   <HiOutlineUser fontSize={23} />
@@ -163,7 +163,7 @@ const Navbar = () => {
               open={Boolean(anchorEl)}
               onClose={handleMenuClose}
             >
-              {user ? (
+              {(loggedInUser && loggedInUser.username) ? (
                 <MenuItem onClick={handleLogout}>Logout</MenuItem>
               ) : (
                 <>

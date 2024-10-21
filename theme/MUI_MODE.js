@@ -10,8 +10,17 @@ export const ColorModeContext = createContext({
 
 export const ColorContextProvider = ({ children }) => {
     const [user, setUser] = useState(null); 
+    // const [loggedInUser, setLoggedInUser] = useState(null); 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [loggedInUser, setLoggedInUser] = useState(() => {
+        if (typeof window !== 'undefined') {
+            const user = localStorage.getItem('loggedInUser');
+            return user ? {username: JSON.parse(user).lastName} : [];
+        }
+        return [];
+    });
+
     const [registeredUsers, setRegisteredUsers] = useState(() => {
         if (typeof window !== 'undefined') {
             const savedUsers = localStorage.getItem('registeredUsers');
@@ -23,8 +32,6 @@ export const ColorContextProvider = ({ children }) => {
     useEffect(() => {
         if (typeof window !== 'undefined') {
             localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
-            console.log(registeredUsers.type);
-            if (registeredUsers && registeredUsers.length != 0) {setUser({ username: registeredUsers[0].lastName });}
         }
     }, [registeredUsers]);
 
@@ -49,8 +56,8 @@ export const ColorContextProvider = ({ children }) => {
         setTimeout(() => {
             const foundUser = registeredUsers.find((u) => u.email === email && u.password === password);
             if (foundUser) {
-                localStorage.setItem('loggedInUsers', JSON.stringify(foundUser));
-                setUser({ username: foundUser.lastName });
+                localStorage.setItem('loggedInUser', JSON.stringify(foundUser));
+                setLoggedInUser({ username: foundUser.lastName });
                 setLoading(false);
                 toast.success('Login successful!');
                 if (callback) callback();
@@ -64,8 +71,8 @@ export const ColorContextProvider = ({ children }) => {
 
     const logout = () => {
         localStorage.removeItem('cart');
-        localStorage.removeItem('loggedInUsers');
-        setUser(null);
+        localStorage.removeItem('loggedInUser');
+        setLoggedInUser(null);
     };
 
     const [mode, setMode] = useState('light');
@@ -127,7 +134,7 @@ export const ColorContextProvider = ({ children }) => {
     });
 
     return (
-        <ColorModeContext.Provider value={{ colorMode, user, registerUser, loginUser, logout, loading, error }}>
+        <ColorModeContext.Provider value={{ colorMode, user, loggedInUser, registerUser, loginUser, logout, loading, error }}>
             <ThemeProvider theme={theme}>
                 {children}
             </ThemeProvider>

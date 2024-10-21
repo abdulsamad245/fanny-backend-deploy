@@ -19,8 +19,9 @@ function LoginPage() {
     const { loginUser, loading, error } = useContext(ColorModeContext);
     const router = useRouter();
 
-    const savedUsers = localStorage.getItem('loggedInUsers');
-    if (savedUsers && (JSON.parse(savedUsers).length) > 0) router.push('/products');
+
+    const savedUsers = localStorage.getItem('loggedInUser');
+    if (savedUsers && (JSON.parse(savedUsers).lastName)) router.push('/products');
 
     const formik = useFormik({
         initialValues: {
