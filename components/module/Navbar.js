@@ -40,14 +40,14 @@ import {
 import { clear } from "../../redux/features/cartSlice";
 
 const Navbar = () => {
-  const { mode, toggleMode, loggedInUser, logout } = useContext(ColorModeContext);
+  const { colorMode: { mode, toggleMode }, loggedInUser, logout } = useContext(ColorModeContext);
   const [menu, setMenu] = useState();
   const router = useRouter();
   const countOfProduct = useSelector((state) => state.cart.totalProcuts);
 
   const dispatch = useDispatch();
 
-  console.log({loggedInUser });
+  console.log( useContext(ColorModeContext));
 
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -59,7 +59,6 @@ const Navbar = () => {
     setAnchorEl(null);
   };
   
-
   const handleLogout = () => {
     dispatch(clear());
     logout();

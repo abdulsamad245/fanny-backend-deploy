@@ -10,7 +10,6 @@ export const ColorModeContext = createContext({
 
 export const ColorContextProvider = ({ children }) => {
     const [user, setUser] = useState(null); 
-    // const [loggedInUser, setLoggedInUser] = useState(null); 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [loggedInUser, setLoggedInUser] = useState(() => {
