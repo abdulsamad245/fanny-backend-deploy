@@ -140,7 +140,7 @@ const Navbar = () => {
               display: { xs: "none", xl: "block" },
             }}
           >
-            <Tooltip title={loggedInUser ? "Logout" : "Login/Register"}>
+            <Tooltip title={(loggedInUser && loggedInUser.username) ? "Logout" : "Login/Register"}>
               <IconButton
                 size="large"
                 aria-label="account of current user"
